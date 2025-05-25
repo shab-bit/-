@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Yaddasht",
+  "version": "1.2",
+  "description": "افزونه ذخیره یادداشت‌ها با سیستم هشدار تاریخ شمسی",
+  "permissions": ["storage", "activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["lib/persian-date.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "128": "icon.png"
+  },
+  "options_page": "options.html"
+}

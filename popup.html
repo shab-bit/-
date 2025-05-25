@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>یادداشت‌ها</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📝 یادداشت‌ها</h1>
+    <ul id="notes-list"></ul>
+
+    <div class="footer">
+      <button id="toggle-settings">تنظیمات سایت‌ها</button>
+    </div>
+
+    <div id="settings-panel" style="display:none;">
+      <h2>سایت‌های مجاز</h2>
+      <div class="site-input-container">
+        <input type="text" id="site-input" placeholder="مثلاً: https://elearn.ut.ac.ir" />
+        <button id="add-site">➕</button>
+        <button id="add-current-site" title="افزودن سایت فعلی">🌐</button>
+      </div>
+      <ul id="site-list"></ul>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تنظیمات Yaddasht</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Vazirmatn, sans-serif;
+      padding: 16px;
+      background-color: #f8f9fa;
+      margin: 0;
+    }
+    
+    h1 {
+      font-size: 1.3rem;
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    #site-input {
+      flex-grow: 1;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: Vazirmatn;
+    }
+    
+    button {
+      padding: 8px 16px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: Vazirmatn;
+    }
+    
+    button:hover {
+      background-color: #3367d6;
+    }
+    
+    .site-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .site-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      background-color: white;
+    }
+    
+    .site-item:last-child {
+      border-bottom: none;
+    }
+    
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+    
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+    
+    .message {
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>تنظیمات سایت‌های مجاز</h1>
+    
+    <div id="message" class="message"></div>
+    
+    <div class="input-group">
+      <input type="text" id="site-input" placeholder="آدرس سایت (مثال: https://example.com)" dir="ltr">
+      <button id="add-site">افزودن</button>
+      <button id="add-current-site">سایت فعلی</button>
+    </div>
+    
+    <ul id="site-list" class="site-list"></ul>
+  </div>
+
+  <script>
+    const siteInput = document.getElementById('site-input');
+    const addBtn = document.getElementById('add-site');
+    const addCurrentBtn = document.getElementById('add-current-site');
+    const siteList = document.getElementById('site-list');
+    const messageEl = document.getElementById('message');
+    
+    // بارگذاری اولیه سایت‌ها
+    loadSites();
+    
+    // افزودن سایت دستی
+    addBtn.addEventListener('click', async () => {
+      const siteUrl = siteInput.value.trim();
+      
+      if (!siteUrl) {
+        showMessage('لطفاً آدرس سایت را وارد کنید', 'error');
+        return;
+      }
+      
+      try {
+        // اعتبارسنجی URL
+        new URL(siteUrl);
+      } catch {
+        showMessage('آدرس سایت نامعتبر است', 'error');
+        return;
+      }
+      
+      const { allowedSites = [] } = await chrome.storage.local.get(['allowedSites']);
+      if (!allowedSites.includes(siteUrl)) {
+        allowedSites.push(siteUrl);
+        await chrome.storage.local.set({ allowedSites });
+        loadSites();
+        siteInput.value = '';
+        showMessage('سایت با موفقیت اضافه شد', 'success');
+      } else {
+        showMessage('این سایت قبلاً اضافه شده است', 'error');
+      }
+    });
+    
+    // افزودن سایت فعلی
+    addCurrentBtn.addEventListener('click', async () => {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab?.url) {
+        try {
+          const currentSite = new URL(tab.url).origin;
+          siteInput.value = currentSite;
+        } catch {
+          showMessage('امکان دریافت آدرس سایت فعلی وجود ندارد', 'error');
+        }
+      }
+    });
+    
+    // بارگذاری لیست سایت‌ها
+    async function loadSites() {
+      const { allowedSites = [] } = await chrome.storage.local.get(['allowedSites']);
+      siteList.innerHTML = '';
+      
+      if (allowedSites.length === 0) {
+        siteList.innerHTML = '<li style="text-align: center; padding: 16px; color: #6c757d;">سایتی اضافه نشده است</li>';
+        return;
+      }
+      
+      allowedSites.forEach((site, index) => {
+        const li = document.createElement('li');
+        li.className = 'site-item';
+        li.innerHTML = `
+          <span>${site}</span>
+          <button class="delete-btn" data-index="${index}">حذف</button>
+        `;
+        
+        li.querySelector('.delete-btn').addEventListener('click', async () => {
+          const { allowedSites = [] } = await chrome.storage.local.get(['allowedSites']);
+          allowedSites.splice(index, 1);
+          await chrome.storage.local.set({ allowedSites });
+          loadSites();
+          showMessage('سایت با موفقیت حذف شد', 'success');
+        });
+        
+        siteList.appendChild(li);
+      });
+    }
+    
+    // نمایش پیام
+    function showMessage(text, type) {
+      messageEl.textContent = text;
+      messageEl.className = `message ${type}`;
+      messageEl.style.display = 'block';
+      
+      setTimeout(() => {
+        messageEl.style.opacity = '0';
+        setTimeout(() => {
+          messageEl.style.display = 'none';
+          messageEl.style.opacity = '1';
+        }, 500);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
