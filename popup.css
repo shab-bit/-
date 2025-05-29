@@ -25,7 +25,7 @@ h1, h2 {
 ul#notes-list, ul#site-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin-top: 4px;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
@@ -84,7 +84,7 @@ ul#notes-list, ul#site-list {
   font-size: 0.9rem;
   color: #444;
   line-height: 1.6;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.6rem;  
   padding-bottom: 0.4rem;
   border-bottom: 1px solid #eee;
   border-top: 1px solid #eee;
