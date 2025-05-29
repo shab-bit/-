@@ -79,16 +79,66 @@ function renderNotes(notes) {
     }
 
     item.innerHTML = `
-      <div class="note-label" contenteditable="true">${note.label}</div>
-      <div class="note-date">${note.date}</div>
-      <div class="note-text">${note.text}</div>
-      <button class="delete-note" data-original-index="${note.originalIndex}">🗑️</button>
+      <div class="note-label" contenteditable="false" spellcheck="false">${note.label}</div>
+      <div class="note-date" contenteditable="false" spellcheck="false">${note.date}</div>
+      <div class="note-text" contenteditable="false" spellcheck="false">${note.text}</div>
+      <button class="edit-note" title="ویرایش" data-original-index="${note.originalIndex}">✏️</button>
+      <button class="delete-note" title="حذف" data-original-index="${note.originalIndex}">🗑️</button>
     `;
 
     list.appendChild(item);
   }
 
-  // حذف یادداشت
+  // فعال/غیرفعال کردن حالت ویرایش
+  document.querySelectorAll('.edit-note').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const item = btn.parentElement;
+      if (!item) return;
+
+      const isEditing = btn.dataset.editing === 'true';
+
+      if (!isEditing) {
+        // رفتن به حالت ویرایش
+        btn.dataset.editing = 'true';
+        btn.textContent = '💾'; // تغییر آیکون به ذخیره
+        btn.title = 'ذخیره';
+
+        // فعال کردن contenteditable
+        item.querySelectorAll('.note-label, .note-date, .note-text').forEach(el => {
+          el.contentEditable = 'true';
+          el.classList.add('editable');
+        });
+        // فوکوس روی اولین فیلد
+        item.querySelector('.note-label').focus();
+      } else {
+        // ذخیره تغییرات
+        const index = parseInt(btn.dataset.originalIndex);
+        const notes = await getNotes();
+
+        const newLabel = item.querySelector('.note-label').innerText.trim();
+        const newDate = item.querySelector('.note-date').innerText.trim();
+        const newText = item.querySelector('.note-text').innerText.trim();
+
+        // اعتبارسنجی ساده تاریخ
+        if (!newDate.match(/^\d{4}\/\d{1,2}\/\d{1,2}(\s*\|\s*\d{1,2}:\d{2})?$/)) {
+          alert('فرمت تاریخ صحیح نیست. باید به شکل yyyy/mm/dd یا yyyy/mm/dd | hh:mm باشد.');
+          return;
+        }
+
+        notes[index] = {
+          ...notes[index],
+          label: newLabel,
+          date: newDate,
+          text: newText,
+        };
+
+        await chrome.storage.local.set({ notes });
+        renderNotes(notes);
+      }
+    });
+  });
+
+  // حذف یادداشت فقط با آیکون
   document.querySelectorAll('.delete-note').forEach(btn => {
     btn.addEventListener('click', async () => {
       const index = parseInt(btn.dataset.originalIndex);

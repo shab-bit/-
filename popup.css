@@ -104,8 +104,8 @@ ul#notes-list, ul#site-list {
 }
 
 button {
-  background: linear-gradient(to right, #007bff, #0056b3);
-  color: white;
+  background: linear-gradient(to right, #ffa76c, #ffffff);
+  color: rgb(0, 0, 0);
   border: none;
   padding: 0.4rem 0.9rem;
   border-radius: 8px;
@@ -116,7 +116,7 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(to right, #0056b3, #003d80);
+  background: linear-gradient(to right, #ffffff, #fff1d8);
   transform: translateY(-1px);
 }
 
@@ -176,4 +176,49 @@ input#site-input {
 .delete-note:hover {
   color: #c0392b;
   transform: scale(1.1);
+}
+
+.edit-note {
+  background: rgba(0, 0, 0, 0.07);
+  color: #000000;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: absolute;
+  top: 6px;
+  left: 42px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.edit-note:hover {
+  color: #c0392b;
+  transform: scale(1.1);
+}
+
+.contact-icon {
+  background: rgba(0, 0, 0, 0.07);
+  color: #000;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 4px;
+  border-radius: 1px;
+  transition: color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.contact-icon:hover {
+  color: #c0392b;
+  background-color: rgba(255, 192, 203, 0.2);
+  transform: scale(1.15);
+}
+
+#copy-email {
+  border: none;
 }
