@@ -12,7 +12,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://elearn.ut.ac.ir/*"],
       "js": ["content.js"],
       "css": ["content.css"]
     }
@@ -20,7 +20,7 @@
   "web_accessible_resources": [
     {
       "resources": ["lib/persian-date.min.js"],
-      "matches": ["<all_urls>"]
+      "matches": ["https://elearn.ut.ac.ir/*"]
     }
   ],
   "icons": {

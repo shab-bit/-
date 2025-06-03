@@ -8,7 +8,41 @@
 </head>
 <body>
   <div class="container">
+    <style>
+    .notes-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 1.5rem;
+      text-align: center;
+      margin: 0rem 0;
+    }
+
+    .icon {
+      font-size: 1.8rem;
+      text-decoration: none;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    
+  </style>
+
+  <div class="notes-header">
+    <!-- آیکون آموزش -->
+    <a href="https://elearn.ut.ac.ir/my/courses.php" target="_blank" class="contact-icon" title="آموزش مجازی">📚</a>
+
+    <!-- عنوان یادداشت‌ها -->
     <h1>📝 یادداشت‌ها</h1>
+
+    <!-- آیکون تغذیه -->
+    <a href="https://dining2.ut.ac.ir/" target="_blank" class="contact-icon" title="سامانه تغذیه">🍽️</a>
+  </div>
+
+
     <ul id="notes-list"></ul>
 
     <div class="footer">
@@ -49,6 +83,53 @@
 </a>
 
   <h3 style="margin-bottom: 10px;">YadDashExtention@proton.me</h3>
+</div>
+
+<!-- لایه تاریک پشت هشدار -->
+<div id="overlay" style="display:none; 
+  position: fixed; 
+  top: 0; left: 0; right: 0; bottom: 0; 
+  background: rgba(0,0,0,0.6); 
+  z-index: 999;">
+</div>
+
+<!-- پنجره هشدار -->
+<div id="modal" style="display:none; 
+  position: fixed; 
+  top: 50%; left: 50%; 
+  transform: translate(-50%, -50%);
+  background: white; 
+  padding: 20px; 
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+  z-index: 1000;
+  max-width: 300px;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  line-height: 1.5;
+">
+  <p style="font-size: 16px; margin-bottom: 16px;">🍽️ سه‌شنبه شده، لطفاً غذا رزرو کن.</p>
+    <div style="display: flex; justify-content: center; gap: 12px;">
+      <button id="remind-later" style="
+      padding: 8px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffa76c, #ff5545);
+      ">بعداً یادآوری کن</button>
+
+      <button id="done" style="
+      padding: 8px 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #96ff3f, #c7ff6c);
+      ">انجام شد ✅</button>
+    </div>
 </div>
 
 </body>

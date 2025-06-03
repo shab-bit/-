@@ -232,3 +232,45 @@ function toGregorian(jy, jm, jd) {
 
   return { gy, gm, gd: days };
 }
+document.addEventListener('DOMContentLoaded', () => {
+  checkLunchReminder();
+
+  document.getElementById('remind-later').addEventListener('click', () => {
+    chrome.storage.local.set({ lastNotified: Date.now() });
+    hideModal();
+  });
+
+  document.getElementById('done').addEventListener('click', () => {
+    chrome.storage.local.set({ done: true });
+    hideModal();
+  });
+});
+
+function checkLunchReminder() {
+  chrome.storage.local.get(["done", "lastNotified"], (res) => {
+    const now = Date.now();
+    const done = res.done || false;
+    const last = res.lastNotified || 0;
+    const diffHours = (now - last) / (1000 * 60 * 60);
+
+    const today = new Date();
+    const day = today.getDay(); // 2 = سه‌شنبه
+    const shouldStart = day >= 2;
+
+    if (shouldStart && !done && diffHours >= 6) {
+      showModal();
+    } else {
+      hideModal();
+    }
+  });
+}
+
+function showModal() {
+  document.getElementById('overlay').style.display = 'block';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function hideModal() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('modal').style.display = 'none';
+}
